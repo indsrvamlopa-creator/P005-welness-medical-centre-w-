@@ -28,11 +28,9 @@ SECRET_KEY = '4vdhdixqqplya4r32)3_s)marv4tdfb=+s@u1mf^-))8itiq^_'
 DEBUG = os.environ.get('DJANGO_DEBUG', '').lower() in ('1', 'true', 'yes')
 
 ALLOWED_HOSTS = [
-    
-    'localhost,'
+    'localhost',
     '127.0.0.1',
-    'https://p005-welness-medical-centre-w.onrender.com'
-    
+    'p005-welness-medical-centre-w.onrender.com',
 ]
 
 
