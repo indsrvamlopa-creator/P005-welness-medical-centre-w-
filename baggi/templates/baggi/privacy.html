@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1b30">
+  <meta name="description" content="How Geetha’s Wellness Consultancy handles registration and community enquiry information.">
+  <title>Privacy Notice — Geetha’s Wellness Consultancy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'baggi/styles.css' %}?v={{ asset_version }}">
+</head>
+<body>
+  <header class="site-header policy-header">
+    <div class="header-inner">
+      <a class="brand" href="{% url 'home' %}" aria-label="Geetha’s Wellness Consultancy home">
+        <span class="brand-mark" aria-hidden="true">✳</span>
+        <span class="brand-copy"><strong>GEETHA’S</strong><small>WELLNESS CONSULTANCY</small></span>
+      </a>
+      <a class="policy-home-link" href="{% url 'home' %}">Back to the community <span>↗</span></a>
+    </div>
+  </header>
+  <main class="policy-page">
+    <p class="eyebrow eyebrow-dark"><span></span> Your information</p>
+    <h1>Privacy <em>notice.</em></h1>
+    <p class="policy-intro">This notice explains how the community organizers use information you choose to share through the free consultation, event registration and community enquiry forms.</p>
+
+    <section>
+      <h2>What we collect</h2>
+      <p>We collect the details requested on the form you submit, such as your name and mobile number. For consultation requests we also ask for your main wellness goal, the service you are interested in, and how and when you would like to meet. You may optionally provide an email address, your area or city, a preferred contact method, an event preference, and a message. We do not ask for medical history. The BMI check runs only in your browser, and nothing you enter there is saved or sent.</p>
+    </section>
+    <section>
+      <h2>Why we use it</h2>
+      <p>Information is used only to respond to your request, arrange your free consultation or coaching, follow up about events you asked about, and coordinate your participation. We do not sell your information, share it with third parties for marketing, or send automated WhatsApp messages.</p>
+    </section>
+    <section>
+      <h2>Who can access it</h2>
+      <p>Submitted enquiries are available to the coach and authorized organizers through a password-protected administration area. A copy of each new submission may also be emailed to the coach. We do not publish registration details or share them with other community members.</p>
+    </section>
+    <section>
+      <h2>How long we keep it</h2>
+      <p>We keep enquiry and registration information only for as long as it is needed to respond and manage the related activity. Organizers should review submissions periodically and delete information that is no longer needed.</p>
+    </section>
+    <section>
+      <h2>Your choices</h2>
+      <p>You can ask the organizer to provide a copy, correct, or delete information you submitted. To make a request, use the <a href="{% url 'home' %}#join">community enquiry form</a> and tell us how we can help. We may need to verify the request before making changes.</p>
+    </section>
+    <p class="policy-reminder">Please do not include medical history or other sensitive information in general enquiry forms. Wellness coaching on this website is not medical advice or a substitute for professional care.</p>
+    <a class="button button-outline" href="{% url 'home' %}">Return to the community <span>↗</span></a>
+  </main>
+  {% include "baggi/_whatsapp_float.html" %}
+  <footer class="policy-footer">© {% now "Y" %} Geetha’s Wellness Consultancy.{% if member_disclosure %} {{ member_disclosure }}.{% endif %}</footer>
+</body>
+</html>

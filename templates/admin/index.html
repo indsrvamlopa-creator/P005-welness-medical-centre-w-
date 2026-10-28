@@ -1,0 +1,106 @@
+{% extends "admin/base_site.html" %}
+{% load log admin_theme %}
+
+{% block bodyclass %}{{ block.super }}dashboard cw-dashboard{% endblock %}
+{% block nav-breadcrumbs %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
+{% block coltype %}colM{% endblock %}
+{% block content_title %}{% endblock %}
+
+{% block content %}
+{% cw_dashboard as dash %}
+<div class="cw-dash">
+  <section class="cw-welcome">
+    <div>
+      <p class="cw-eyebrow">{% now "l, j F Y" %}</p>
+      <h1>{{ dash.greeting }}, <em>{% firstof user.get_short_name user.get_username %}.</em></h1>
+      <p>Here’s what’s happening on your website today.</p>
+    </div>
+    <div class="cw-quick">
+      {% if perms.baggi.add_communityevent %}<a class="cw-btn cw-btn-gold" href="{% url 'admin:baggi_communityevent_add' %}">{% cw_icon "plus" %} New event</a>{% endif %}
+      {% if perms.baggi.add_service %}<a class="cw-btn" href="{% url 'admin:baggi_service_add' %}">{% cw_icon "plus" %} New service</a>{% endif %}
+      {% if perms.baggi.change_sitesettings %}<a class="cw-btn" href="{% url 'admin:baggi_sitesettings_changelist' %}">{% cw_icon "sliders" %} Site settings</a>{% endif %}
+    </div>
+  </section>
+
+  {% if dash.stats %}
+  <section class="cw-stats" aria-label="At a glance">
+    {% for stat in dash.stats %}
+      <a class="cw-stat cw-stat-{{ stat.tone }}" href="{{ stat.url }}">
+        <span class="cw-stat-icon">{% cw_icon stat.icon %}</span>
+        <strong>{{ stat.value }}</strong>
+        <span class="cw-stat-label">{{ stat.label }}</span>
+        <span class="cw-stat-arrow">{% cw_icon "arrow" %}</span>
+      </a>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  <div class="cw-panels">
+    {% if dash.consultations is not None %}
+    <section class="cw-panel cw-panel-wide">
+      <header class="cw-panel-head"><h2>Latest bookings</h2><a href="{{ dash.consultations_url }}">View all {% cw_icon "arrow" %}</a></header>
+      {% if dash.consultations %}
+        <div class="cw-table-wrap">
+        <table class="cw-table">
+          <thead><tr><th scope="col">Name</th><th scope="col">Goal / service</th><th scope="col">Status</th><th scope="col">Received</th></tr></thead>
+          <tbody>
+            {% for booking in dash.consultations %}
+              <tr>
+                <td>{% if booking.source == "service" %}<a href="{% url 'admin:baggi_servicebooking_change' booking.pk %}">{% else %}<a href="{% url 'admin:baggi_wellnessconsultation_change' booking.pk %}">{% endif %}{{ booking.full_name }}</a><small>{{ booking.mobile_number }}</small></td>
+                <td>{% if booking.source == "service" %}<span class="cw-pill cw-pill-scheduled">Service</span> {{ booking.service.title|default:"—" }}{% else %}{{ booking.get_goal_display }}{% endif %}</td>
+                <td><span class="cw-pill cw-pill-{{ booking.status }}">{{ booking.get_status_display }}</span></td>
+                <td>{{ booking.submitted_at|date:"j M, H:i" }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        </div>
+      {% else %}
+        <p class="cw-empty">No bookings yet. New requests from the website will appear here.</p>
+      {% endif %}
+    </section>
+    {% endif %}
+
+    {% if dash.events is not None %}
+    <section class="cw-panel">
+      <header class="cw-panel-head"><h2>Upcoming events</h2><a href="{{ dash.events_url }}">View all {% cw_icon "arrow" %}</a></header>
+      {% if dash.events %}
+        <ul class="cw-events">
+          {% for event in dash.events %}
+            <li>
+              <span class="cw-date"><b>{{ event.starts_at|date:"j" }}</b>{{ event.starts_at|date:"M" }}</span>
+              <span class="cw-event-copy">
+                <a href="{% url 'admin:baggi_communityevent_change' event.pk %}">{{ event.title }}</a>
+                <small>{{ event.starts_at|date:"D, H:i" }} · {% if event.is_online %}Online{% else %}{{ event.venue|default:"Venue to confirm" }}{% endif %}{% if event.capacity %} · {{ event.seats_taken }}/{{ event.capacity }} booked{% endif %}</small>
+              </span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="cw-empty">No upcoming events.{% if perms.baggi.add_communityevent %} <a href="{% url 'admin:baggi_communityevent_add' %}">Add one</a>.{% endif %}</p>
+      {% endif %}
+    </section>
+    {% endif %}
+
+    <section class="cw-panel">
+      <header class="cw-panel-head"><h2>Your recent changes</h2></header>
+      {% get_admin_log 6 as admin_log for_user user %}
+      {% if admin_log %}
+        <ul class="cw-log">
+          {% for entry in admin_log %}
+            <li class="{% if entry.is_addition %}is-add{% elif entry.is_change %}is-change{% else %}is-delete{% endif %}">
+              {% if entry.is_deletion or not entry.get_admin_url %}{{ entry.object_repr }}{% else %}<a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>{% endif %}
+              <small>{% if entry.is_addition %}Added{% elif entry.is_change %}Changed{% else %}Deleted{% endif %}{% if entry.content_type %} · {{ entry.content_type.name|capfirst }}{% endif %} · {{ entry.action_time|timesince }} ago</small>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="cw-empty">Nothing yet. Changes you make in the admin will be listed here.</p>
+      {% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

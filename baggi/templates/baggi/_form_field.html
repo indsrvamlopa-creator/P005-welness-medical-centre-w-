@@ -1,0 +1,12 @@
+{% if field.name == "consent" %}
+  <div class="field-wrap field-full consent-field">
+    <label class="consent-label" for="{{ field.id_for_label }}">{{ field }}<span>{{ field.label }} <a href="{% url 'privacy' %}">Read our privacy notice</a>.</span></label>
+    {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+  </div>
+{% else %}
+  <div class="field-wrap{% if full %} field-full{% endif %}">
+    <label for="{{ field.id_for_label }}">{{ field.label }}{% if not field.field.required %} <span class="optional-label">(optional)</span>{% endif %}</label>
+    {{ field }}
+    {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+  </div>
+{% endif %}

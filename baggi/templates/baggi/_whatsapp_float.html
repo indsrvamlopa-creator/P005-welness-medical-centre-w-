@@ -1,0 +1,10 @@
+{% if whatsapp_number %}
+  <a class="whatsapp-float" href="https://wa.me/{{ whatsapp_number }}{% if whatsapp_message %}?text={{ whatsapp_message|urlencode }}{% endif %}" target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp">
+{% else %}
+  <a class="whatsapp-float" href="{% url 'home' %}#join" aria-label="Contact us">
+{% endif %}
+    <span class="whatsapp-float-icon" aria-hidden="true">
+      {% include "baggi/_whatsapp_logo.html" %}
+    </span>
+    <span class="whatsapp-float-label">Chat with us</span>
+  </a>

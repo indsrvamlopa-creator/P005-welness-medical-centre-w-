@@ -1,0 +1,419 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1b30">
+  <meta name="description" content="Geetha’s Wellness Consultancy: personal wellness and nutrition coaching, a free wellness consultation, and community wellness sessions.">
+  <title>Geetha’s Wellness Consultancy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=DM+Sans:wght@400;500;600;700&family=Jost:wght@300;400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'baggi/styles.css' %}?v={{ asset_version }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#home" aria-label="Geetha’s Wellness Consultancy home">
+        <span class="brand-mark" aria-hidden="true">✳</span>
+        <span class="brand-copy"><strong>GEETHA’S</strong><small>WELLNESS CONSULTANCY</small></span>
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#events">Events</a>
+        <a href="#consultation">Free consultation</a>
+        <a href="#join" class="nav-cta">Contact <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-image hero-media">
+        <video class="hero-video" id="hero-video" autoplay muted loop playsinline preload="auto" poster="{% static 'baggi/media/hero-poster.jpg' %}" aria-hidden="true">
+          <source src="{% static 'baggi/media/hero-workout.mp4' %}" type="video/mp4">
+        </video>
+      </div>
+      <div class="hero-shade"></div>
+      <div class="hero-content">
+        <p class="eyebrow"><span></span> Wellbeing, connection, community</p>
+        <h1>Better days<br>grow <em>together.</em></h1>
+        <p class="hero-intro">Personal wellness and nutrition coaching, with a friendly community behind you.</p>
+        <div class="hero-actions">
+          <a class="button button-gold" href="#consultation">Book a free consultation <span>↗</span></a>
+          <a class="text-link" href="#services">Explore our services <span>↓</span></a>
+        </div>
+      </div>
+      <button class="hero-video-toggle" id="hero-video-toggle" type="button" aria-controls="hero-video" aria-label="Pause background video"><span class="icon-pause" aria-hidden="true"></span></button>
+    </section>
+
+    {% if messages %}
+      <div class="form-messages" role="status" aria-live="polite">
+        {% for message in messages %}<p class="message {{ message.tags }}">{{ message }}</p>{% endfor %}
+      </div>
+    {% endif %}
+
+    <section class="about section-wrap" id="about">
+      <div class="about-body">
+        <div class="about-visual">
+          <div class="about-photo" data-about-slider>
+            {% for url, alt in about_photos %}
+              <img class="about-slide{% if forloop.first %} is-active{% endif %}" src="{{ url }}" alt="{{ alt }}" loading="lazy"{% if not forloop.first %} aria-hidden="true"{% endif %}>
+            {% endfor %}
+            {% if about_photos|length > 1 %}
+              <div class="about-dots" role="group" aria-label="Choose a photo">
+                {% for url, alt in about_photos %}
+                  <button type="button" class="about-dot{% if forloop.first %} is-active{% endif %}" aria-label="Show photo {{ forloop.counter }}"{% if forloop.first %} aria-current="true"{% endif %}><span></span></button>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          <div class="about-seal" aria-hidden="true">
+            <svg class="about-seal-ring" viewBox="0 0 100 100">
+              <defs><path id="about-seal-path" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0"/></defs>
+              <text><textPath href="#about-seal-path" textLength="228">WELLNESS · NUTRITION · COACHING ·</textPath></text>
+            </svg>
+            <span class="about-seal-core">✳</span>
+          </div>
+        </div>
+
+        <div class="about-copy">
+          <p class="eyebrow eyebrow-dark"><span></span> About us</p>
+          <h2>Wellness coaching,<br>built around <em>you.</em></h2>
+
+          <h3 class="about-offer-title">What we offer</h3>
+          <ul class="offer-list">
+            <li>Personalised wellness guidance</li>
+            <li>Weight management support</li>
+            <li>Healthy lifestyle coaching</li>
+            <li>Nutrition education</li>
+            <li>Fitness challenges</li>
+            <li>Wellness assessments</li>
+          </ul>
+
+          <a class="button button-dark" href="#consultation">Book a free consultation <span>↗</span></a>
+          <p class="about-note">Products support a balanced diet and are not a medical treatment.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="services section-wrap" id="services">
+      <div class="svc-head">
+        <p class="eyebrow eyebrow-dark"><span></span> Our services <span></span></p>
+        <h2>Support for every<br><em>step forward.</em></h2>
+        <p class="section-summary">Choose the support that suits you.</p>
+      </div>
+
+      {% if services %}
+        <div class="svc-slider" data-slider>
+          <button class="svc-arrow svc-arrow-prev" type="button" data-slider-prev aria-label="Previous services" hidden>‹</button>
+          <div class="svc-grid" data-slider-track tabindex="0" role="region" aria-label="Our services, scroll sideways for more">
+          {% for service in services %}
+            <article class="svc-card" data-reveal style="--delay: {% widthratio forloop.counter0 1 120 %}ms">
+              <div class="svc-card-top">
+                <span class="svc-icon" aria-hidden="true">{{ service.icon }}</span>
+                <span class="svc-num">{{ forloop.counter|stringformat:"02d" }}</span>
+              </div>
+              <h3>{{ service.title }}</h3>
+              <p>{{ service.summary }}</p>
+              {% if service.price_display is not None %}
+                <div class="svc-price">
+                  {% if service.is_free %}
+                    <strong>Free</strong>
+                  {% else %}
+                    <strong><span class="svc-currency">₹</span>{{ service.price_display }}</strong>
+                    {% if service.original_price_display %}<s aria-label="Original price ₹{{ service.original_price_display }}">₹{{ service.original_price_display }}</s>{% endif %}
+                  {% endif %}
+                  {% if service.price_unit %}<small>{{ service.price_unit }}</small>{% elif service.is_free %}<small>No obligation</small>{% endif %}
+                </div>
+              {% endif %}
+              <a class="svc-link" href="?service={{ service.slug }}#consultation" data-dialog="book-dialog" data-book-service="{{ service.pk }}" data-book-title="{{ service.title }}">Book this <span>↗</span></a>
+            </article>
+          {% endfor %}
+          </div>
+          <button class="svc-arrow svc-arrow-next" type="button" data-slider-next aria-label="More services" hidden>›</button>
+          <div class="svc-progress" data-slider-progress hidden><span></span></div>
+        </div>
+      {% endif %}
+
+      <div class="bmi-panel" id="bmi" data-reveal>
+        <div class="bmi-copy">
+          <p class="eyebrow"><span></span> Quick wellness check</p>
+          <h3>Check your BMI</h3>
+          <p>A simple starting point before your consultation. Nothing you enter here is saved or sent anywhere.</p>
+        </div>
+        <form class="bmi-form" id="bmi-form" novalidate>
+          <div class="bmi-fields">
+            <label for="bmi-height">Height (cm)
+              <input id="bmi-height" type="number" min="50" max="250" step="0.1" inputmode="decimal" placeholder="e.g. 165" required>
+            </label>
+            <label for="bmi-weight">Weight (kg)
+              <input id="bmi-weight" type="number" min="10" max="350" step="0.1" inputmode="decimal" placeholder="e.g. 68" required>
+            </label>
+            <button class="button button-gold" type="submit">Calculate <span>↗</span></button>
+          </div>
+          <p class="bmi-result" id="bmi-result" role="status" aria-live="polite">BMI is a general screening guide only. It is not a diagnosis or medical advice.</p>
+        </form>
+
+        <div class="bmi-report" id="bmi-report" hidden>
+          <div class="bmi-score">
+            <span class="bmi-score-label">Your BMI</span>
+            <strong id="bmi-value">–</strong>
+            <span class="bmi-badge" id="bmi-category"></span>
+          </div>
+          <div class="bmi-detail">
+            <div class="bmi-scale" aria-hidden="true">
+              <div class="bmi-scale-bar">
+                <span class="bmi-seg bmi-seg-under"></span><span class="bmi-seg bmi-seg-healthy"></span><span class="bmi-seg bmi-seg-over"></span><span class="bmi-seg bmi-seg-obese"></span>
+              </div>
+              <span class="bmi-marker" id="bmi-marker"></span>
+              <div class="bmi-scale-labels"><span style="left: 14%">18.5</span><span style="left: 40%">25</span><span style="left: 60%">30</span></div>
+            </div>
+            <p class="bmi-summary" id="bmi-summary"></p>
+            <dl class="bmi-facts">
+              <div><dt>Healthy weight for your height</dt><dd id="bmi-healthy-range"></dd></div>
+              <div><dt>Your weight</dt><dd id="bmi-weight-out"></dd></div>
+              <div><dt>To reach the healthy range</dt><dd id="bmi-gap"></dd></div>
+            </dl>
+            <ul class="bmi-ranges">
+              <li data-band="under"><i></i>Underweight <span>below 18.5</span></li>
+              <li data-band="healthy"><i></i>Healthy <span>18.5 – 24.9</span></li>
+              <li data-band="over"><i></i>Overweight <span>25 – 29.9</span></li>
+              <li data-band="obese"><i></i>Obese <span>30 and above</span></li>
+            </ul>
+            <a class="button button-gold" href="#consultation">Discuss my result in a free consultation <span>↗</span></a>
+          </div>
+        </div>
+      </div>
+
+      {% with form=book_form %}
+      <dialog class="event-dialog book-dialog" id="book-dialog" aria-labelledby="book-dialog-title"{% if book_form_open %} data-open-on-load{% endif %}>
+        <div class="event-dialog-head">
+          <div>
+            <p class="eyebrow eyebrow-dark"><span></span> Book a service</p>
+            <h3 id="book-dialog-title" data-book-heading>{% if form.instance.service %}{{ form.instance.service.title }}{% else %}Book your session{% endif %}</h3>
+            <p class="event-time">Send your details and the coach will call to confirm a time.</p>
+          </div>
+          <button class="event-dialog-close" type="button" aria-label="Close booking form">×</button>
+        </div>
+        <form class="consult-form" method="post" action="#services">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="book">
+          {% if form.non_field_errors %}<div class="field-errors">{{ form.non_field_errors }}</div>{% endif %}
+          <div class="form-grid">
+            {% include "baggi/_form_field.html" with field=form.service full=True %}
+            {% include "baggi/_form_field.html" with field=form.full_name %}
+            {% include "baggi/_form_field.html" with field=form.mobile_number %}
+            {% include "baggi/_form_field.html" with field=form.email full=True %}
+            {% include "baggi/_form_field.html" with field=form.goal %}
+            {% include "baggi/_form_field.html" with field=form.consultation_mode %}
+            {% include "baggi/_form_field.html" with field=form.preferred_contact_method %}
+            {% include "baggi/_form_field.html" with field=form.preferred_at %}
+          </div>
+          <details class="consult-more"{% if form.area_city.errors or form.message.errors %} open{% endif %}>
+            <summary>Add more details <span class="optional-label">(optional)</span></summary>
+            <div class="form-grid">
+              {% include "baggi/_form_field.html" with field=form.area_city %}
+              {% include "baggi/_form_field.html" with field=form.message full=True %}
+            </div>
+          </details>
+          {% include "baggi/_form_field.html" with field=form.consent %}
+          <button class="button button-gold" type="submit">Send booking request <span>↗</span></button>
+          <p class="privacy-note">Coaching is not medical advice. If you have a medical condition, please check with your doctor first.</p>
+        </form>
+      </dialog>
+      {% endwith %}
+    </section>
+
+    {% include "baggi/_reviews.html" %}
+
+    <section class="manifesto">
+      <div class="manifesto-image" role="img" aria-label="People walking together along a scenic path"></div>
+      <div class="manifesto-content">
+        <p class="eyebrow"><span></span> Real support, real people</p>
+        <h2>Good things happen<br>when we <em>show up.</em></h2>
+        {% if success_story %}
+          <blockquote>“{{ success_story.quote }}”<br><small>— {{ success_story.client_name }}</small></blockquote>
+        {% else %}
+          <blockquote>“Small, steady changes add up to a healthier, more energetic you.”</blockquote>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="consult section-wrap" id="consultation">
+      <div class="consult-intro">
+        <p class="eyebrow eyebrow-dark"><span></span> Free wellness consultation</p>
+        <h2>Your first step<br>is <em>on us.</em></h2>
+        <p class="body-copy">A free, no-obligation chat about your goals and a simple plan to get started.</p>
+        <ol class="consult-steps">
+          <li><span>1</span> Share your goal</li>
+          <li><span>2</span> We call to confirm</li>
+          <li><span>3</span> Meet and get your plan</li>
+        </ol>
+      </div>
+
+      {% with form=consultation_form %}
+      <form class="consult-card" method="post" action="#consultation">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="consultation">
+        <h3 class="consult-card-title">Book your free consultation</h3>
+        {% if form.non_field_errors %}<div class="field-errors">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="form-grid">
+          {% include "baggi/_form_field.html" with field=form.full_name %}
+          {% include "baggi/_form_field.html" with field=form.mobile_number %}
+          {% include "baggi/_form_field.html" with field=form.email %}
+          {% include "baggi/_form_field.html" with field=form.goal %}
+          {% include "baggi/_form_field.html" with field=form.service %}
+          {% include "baggi/_form_field.html" with field=form.consultation_mode %}
+          {% include "baggi/_form_field.html" with field=form.preferred_contact_method %}
+        </div>
+        <details class="consult-more"{% if form.area_city.errors or form.preferred_at.errors or form.message.errors %} open{% endif %}>
+          <summary>Add more details <span class="optional-label">(optional)</span></summary>
+          <div class="form-grid">
+            {% include "baggi/_form_field.html" with field=form.area_city %}
+            {% include "baggi/_form_field.html" with field=form.preferred_at %}
+            {% include "baggi/_form_field.html" with field=form.message full=True %}
+          </div>
+        </details>
+        {% include "baggi/_form_field.html" with field=form.consent %}
+        <button class="button button-gold" type="submit">Book my free consultation <span>↗</span></button>
+        <p class="privacy-note">Coaching is not medical advice. If you have a medical condition, please check with your doctor first.</p>
+      </form>
+      {% endwith %}
+    </section>
+
+    <section class="events section-wrap" id="events">
+      <div class="svc-head">
+        <p class="eyebrow eyebrow-dark"><span></span> Upcoming gatherings <span></span></p>
+        <h2>Join our next <em>session.</em></h2>
+        <p class="section-summary">Reserve your place in a few clicks.</p>
+      </div>
+
+      {% if events %}
+        <div class="svc-slider ev-slider" data-slider>
+          <button class="svc-arrow svc-arrow-prev" type="button" data-slider-prev aria-label="Previous events" hidden>‹</button>
+          <div class="ev-grid" data-slider-track tabindex="0" role="region" aria-label="Upcoming events, scroll sideways for more">
+            {% for event in events %}
+              {% cycle '0ms' '100ms' '200ms' as delay silent %}
+              {% include "baggi/_event_card.html" with event=event delay=delay %}
+            {% endfor %}
+          </div>
+          <button class="svc-arrow svc-arrow-next" type="button" data-slider-next aria-label="More events" hidden>›</button>
+          <div class="svc-progress" data-slider-progress hidden><span></span></div>
+        </div>
+      {% else %}
+        <div class="ev-empty">
+          <span class="value-icon">✳</span>
+          <p>New events are coming soon.</p>
+          <a class="button button-outline" href="#join">Keep me updated <span>↗</span></a>
+        </div>
+      {% endif %}
+
+      {% if past_events %}
+        <div class="past-events" id="recent-events">
+          <p class="past-title">Recent events{% if past_page.paginator.num_pages > 1 %} <span>{{ past_page.start_index }}–{{ past_page.end_index }} of {{ past_page.paginator.count }}</span>{% endif %}</p>
+          <ul class="past-list">
+            {% for event in past_events %}
+              <li id="event-{{ event.pk }}">
+                <span class="past-date">{{ event.starts_at|date:"d M Y" }}</span>
+                <span class="past-name">{{ event.title }}</span>
+                <span class="past-tag">Completed</span>
+              </li>
+            {% endfor %}
+          </ul>
+          {% if past_page.has_other_pages %}
+            <nav class="pager" aria-label="Recent events pages">
+              {% if past_page.has_previous %}
+                <a class="pager-step" href="?past_page={{ past_page.previous_page_number }}#recent-events" aria-label="Previous page">‹</a>
+              {% else %}
+                <span class="pager-step is-disabled" aria-hidden="true">‹</span>
+              {% endif %}
+              {% for number in past_page_range %}
+                {% if number == past_page.paginator.ELLIPSIS %}
+                  <span class="pager-gap">…</span>
+                {% elif number == past_page.number %}
+                  <span class="pager-num is-current" aria-current="page">{{ number }}</span>
+                {% else %}
+                  <a class="pager-num" href="?past_page={{ number }}#recent-events" aria-label="Page {{ number }}">{{ number }}</a>
+                {% endif %}
+              {% endfor %}
+              {% if past_page.has_next %}
+                <a class="pager-step" href="?past_page={{ past_page.next_page_number }}#recent-events" aria-label="Next page">›</a>
+              {% else %}
+                <span class="pager-step is-disabled" aria-hidden="true">›</span>
+              {% endif %}
+            </nav>
+          {% endif %}
+        </div>
+      {% endif %}
+    </section>
+
+    <section class="join section-wrap" id="join">
+      <div class="join-intro">
+        <p class="eyebrow eyebrow-dark"><span></span> Join the community</p>
+        <h2>There’s a place<br>for <em>you here.</em></h2>
+        <p class="body-copy">Tell us what interests you and we’ll be in touch.</p>
+        <ul class="join-perks">
+          <li><span aria-hidden="true">✳</span> Wellness sessions</li>
+          <li><span aria-hidden="true">✦</span> Community activities</li>
+          <li><span aria-hidden="true">◆</span> Team opportunity</li>
+        </ul>
+      </div>
+
+      {% with form=interest_form %}
+      <form class="join-card" method="post" action="#join">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="community">
+        <div class="join-card-head">
+          <h3>Send an enquiry</h3>
+          <p>We’ll follow up the way you prefer.</p>
+        </div>
+        <div class="join-card-body">
+          {% if form.non_field_errors %}<div class="field-errors">{{ form.non_field_errors }}</div>{% endif %}
+          <div class="form-grid">
+            {% include "baggi/_form_field.html" with field=form.full_name %}
+            {% include "baggi/_form_field.html" with field=form.mobile_number %}
+            {% include "baggi/_form_field.html" with field=form.area_of_interest %}
+            {% include "baggi/_form_field.html" with field=form.preferred_contact_method %}
+          </div>
+          <details class="consult-more"{% if form.email.errors or form.area_city.errors or form.message.errors %} open{% endif %}>
+            <summary>Add more details <span class="optional-label">(optional)</span></summary>
+            <div class="form-grid">
+              {% include "baggi/_form_field.html" with field=form.email %}
+              {% include "baggi/_form_field.html" with field=form.area_city %}
+              {% include "baggi/_form_field.html" with field=form.message full=True %}
+            </div>
+          </details>
+          {% include "baggi/_form_field.html" with field=form.consent %}
+          <button class="button button-gold" type="submit">Send your enquiry <span>↗</span></button>
+          <p class="privacy-note">Used only to reply to your enquiry. Please don’t include medical details.</p>
+        </div>
+      </form>
+      {% endwith %}
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-main">
+      <div class="footer-about">
+        <a class="brand brand-footer" href="#home"><span class="brand-mark" aria-hidden="true">✳</span><span class="brand-copy"><strong>GEETHA’S</strong><small>WELLNESS CONSULTANCY</small></span></a>
+        <p>Personal wellness and nutrition coaching, community wellness sessions, and friendly support for healthy habits.</p>{% if member_disclosure %}<p>{{ member_disclosure }}</p>{% endif %}
+      </div>
+      <div class="footer-links"><h3>Explore</h3><a href="#home">Home</a><a href="#about">About</a><a href="#services">Services</a><a href="#reviews">Reviews</a><a href="#consultation">Free consultation</a><a href="#events">Events &amp; sessions</a><a href="#join">Join the community</a></div>
+      <div class="footer-links"><h3>Get in touch</h3>{% if site.phone %}<a href="tel:{{ site.phone|cut:' ' }}">{{ site.phone }}</a>{% endif %}{% if site.email %}<a href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}<a href="#join" class="footer-contact">Contact the coach <span>↗</span></a><a href="{% url 'privacy' %}">Privacy notice</a>
+        {% if site.social_links or whatsapp_number %}<h3 class="footer-follow">Follow us</h3>{% include "baggi/_social_links.html" %}{% endif %}
+      </div>
+    </div>
+    <div class="footer-bottom"><span>© {% now "Y" %} Geetha’s Wellness Consultancy.</span><span>Wellness coaching supports healthy lifestyle habits. It is not medical advice or a substitute for professional care, and individual results vary.</span></div>
+  </footer>
+  {% include "baggi/_whatsapp_float.html" %}
+  <script src="{% static 'baggi/site.js' %}?v={{ asset_version }}" defer></script>
+</body>
+</html>

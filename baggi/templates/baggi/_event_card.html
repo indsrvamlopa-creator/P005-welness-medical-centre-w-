@@ -1,0 +1,67 @@
+<article class="ev-card" id="event-{{ event.pk }}" data-reveal style="--delay: {{ delay|default:'0ms' }}">
+  {% with status=event.registration_status %}
+  <div class="ev-media{% if not event.image %} ev-media-empty{% endif %}">
+    {% if event.image %}<img class="event-image" src="{{ event.image.url }}" alt="{{ event.title }}" loading="lazy">{% else %}<span class="ev-media-mark" aria-hidden="true">✳</span>{% endif %}
+    <div class="ev-date"><span>{{ event.starts_at|date:"d" }}</span><small>{{ event.starts_at|date:"M" }}</small></div>
+    <span class="ev-mode">{% if event.is_online %}Online{% else %}In person{% endif %}</span>
+    <span class="ev-status ev-status-{{ status }}">{% if status == "open" %}Open{% elif status == "full" %}Fully booked{% else %}Registration closed{% endif %}</span>
+  </div>
+  <div class="ev-body">
+    <h3>{{ event.title }}</h3>
+    {% if event.description %}<p class="ev-desc">{{ event.description }}</p>{% endif %}
+    <ul class="ev-meta">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> {{ event.starts_at|date:"D" }} · {{ event.starts_at|time:"g:i A" }}{% if event.ends_at %} – {% if event.ends_at|date:"Ymd" != event.starts_at|date:"Ymd" %}{{ event.ends_at|date:"d M" }}, {% endif %}{{ event.ends_at|time:"g:i A" }}{% endif %}</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> {% if event.is_online %}Online{% else %}{{ event.venue|default:"Venue shared after registration" }}{% endif %}</li>
+      {% if status == "open" and event.seats_left is not None %}<li class="ev-seats"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5.2a3 3 0 0 1 0 5.6M18 14.4c1.8.8 3 2.7 3 5.6"/></svg> {{ event.seats_left }} place{{ event.seats_left|pluralize }} left</li>{% endif %}
+    </ul>
+    {% if status == "open" and event.registration_closes_at %}<p class="ev-deadline">Registration closes {{ event.registration_closes_at|date:"d M, g:i A" }}</p>{% endif %}
+  {% endwith %}
+
+  {% if event.registration_form %}
+    {% with form=event.registration_form %}
+      <button class="event-register-open" type="button" data-dialog="event-dialog-{{ event.pk }}" aria-haspopup="dialog">Register for this event <span>↗</span></button>
+      <dialog class="event-dialog ev-dialog" id="event-dialog-{{ event.pk }}" aria-labelledby="event-dialog-title-{{ event.pk }}"{% if event.form_expanded %} data-open-on-load{% endif %}>
+        <div class="event-dialog-head">
+          <div>
+            <p class="eyebrow eyebrow-dark"><span></span> Event registration</p>
+            <h3 id="event-dialog-title-{{ event.pk }}">{{ event.title }}</h3>
+            <p class="event-time">{{ event.starts_at|date:"D, d M Y" }} · {{ event.starts_at|time:"g:i A" }} · {% if event.is_online %}Online{% else %}{{ event.venue|default:"Location shared after registration" }}{% endif %}</p>
+          </div>
+          <button class="event-dialog-close" type="button" aria-label="Close registration form">×</button>
+        </div>
+        <p class="ev-mode-note ev-mode-note-{% if event.is_online %}online{% else %}offline{% endif %}">
+          {% if event.is_online %}
+            <b>Online session</b> We’ll send the joining link to your email before the event.
+          {% else %}
+            <b>In person</b> {{ event.venue|default:"The venue will be shared with you after registration." }}
+          {% endif %}
+        </p>
+        <form class="consult-form" method="post" action="#event-{{ event.pk }}">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="event">
+          {% if form.non_field_errors %}<div class="field-errors">{{ form.non_field_errors }}</div>{% endif %}
+          {% for field in form.hidden_fields %}{{ field }}{% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}{% endfor %}
+          <div class="form-grid">
+            {% for field in form.visible_fields %}
+              {% if field.name == "consent" %}
+                <div class="field-wrap field-full consent-field">
+                  <label class="consent-label" for="{{ field.id_for_label }}">{{ field }}<span>{{ field.label }} <a href="{% url 'privacy' %}">Read our privacy notice</a>.</span></label>
+                  {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                </div>
+              {% else %}
+                <div class="field-wrap{% if field.name == 'message' %} field-full{% endif %}">
+                  <label for="{{ field.id_for_label }}">{{ field.label }}{% if not field.field.required %} <span class="optional-label">(optional)</span>{% endif %}</label>
+                  {{ field }}
+                  {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <button class="button button-gold" type="submit">Register for {{ event.title|truncatechars:28 }} <span>↗</span></button>
+          <p class="privacy-note">We use these details only to respond to your registration. Please do not include medical or other sensitive information.</p>
+        </form>
+      </dialog>
+    {% endwith %}
+  {% endif %}
+  </div>
+</article>

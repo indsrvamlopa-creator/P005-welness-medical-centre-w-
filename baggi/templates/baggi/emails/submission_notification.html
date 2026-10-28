@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>{{ subject }}</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f3f5f4;color:#172b3a;font-family:Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f3f5f4;padding:32px 12px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:600px;background-color:#ffffff;border:1px solid #e4e9e6;border-radius:12px;overflow:hidden;">
+          <tr>
+            <td style="background-color:#0b1b30;padding:28px 32px;">
+              <p style="margin:0 0 8px;color:#d8b56d;font-size:12px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;">{{ brand_name }}</p>
+              <h1 style="margin:0;color:#ffffff;font-size:24px;line-height:1.3;font-weight:600;">New website submission</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:30px 32px 12px;">
+              <p style="margin:0 0 8px;color:#52636d;font-size:14px;line-height:1.6;">{{ subject }}</p>
+              <p style="margin:0;color:#172b3a;font-size:15px;line-height:1.6;">A visitor has sent a new form. Their details are below.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:12px 32px 28px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;">
+                {% for row in rows %}
+                  <tr>
+                    <td style="width:36%;padding:12px 14px;border-bottom:1px solid #e8edea;background-color:#f7f9f8;color:#52636d;font-size:13px;font-weight:bold;vertical-align:top;">{{ row.label }}</td>
+                    <td style="padding:12px 14px;border-bottom:1px solid #e8edea;color:#172b3a;font-size:14px;line-height:1.6;overflow-wrap:anywhere;vertical-align:top;">{{ row.value|linebreaksbr }}</td>
+                  </tr>
+                {% endfor %}
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:18px 32px;background-color:#f7f9f8;border-top:1px solid #e8edea;">
+              <p style="margin:0;color:#687780;font-size:12px;line-height:1.6;">This notification was sent automatically from the {{ brand_name }} website.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

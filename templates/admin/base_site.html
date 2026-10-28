@@ -1,0 +1,68 @@
+{% extends "admin/base.html" %}
+{% load static admin_theme %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:"Geetha’s Wellness Consultancy admin" }}{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'baggi/admin.css' %}?v={{ asset_version }}">
+<script src="{% static 'baggi/admin.js' %}?v={{ asset_version }}" defer></script>
+{% endblock %}
+
+{% block bodyclass %}{% if has_permission and not is_popup %}cw-shell {% endif %}{% endblock %}
+
+{% block header %}
+{% if has_permission %}
+  {% cw_sidebar %}
+  <div class="cw-backdrop" hidden></div>
+  <header id="header" class="cw-topbar">
+    <button class="cw-menu-button" type="button" aria-controls="cw-sidebar" aria-expanded="false" aria-label="Open menu">{% cw_icon "menu" %}</button>
+    <p class="cw-topbar-title">{% if title %}{{ title }}{% else %}Dashboard{% endif %}</p>
+    <div class="cw-topbar-tools">
+      {% if site_url %}<a class="cw-chip" href="{{ site_url }}" target="_blank" rel="noopener">{% cw_icon "external" %}<span>View website</span></a>{% endif %}
+      {% include "admin/color_theme_toggle.html" %}
+      {% firstof user.get_short_name user.get_username as display_name %}
+      <div class="cw-user">
+        <span class="cw-avatar" aria-hidden="true">{{ display_name|slice:":1"|upper }}</span>
+        <span class="cw-user-name">{{ display_name }}</span>
+        {% if user.has_usable_password %}<a class="cw-user-link" href="{% url 'admin:password_change' %}">Password</a>{% endif %}
+        <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="cw-logout" title="Log out">{% cw_icon "logout" %}<span>Log out</span></button>
+        </form>
+      </div>
+    </div>
+  </header>
+  <script>
+    (() => {
+      const button = document.querySelector('.cw-menu-button');
+      const backdrop = document.querySelector('.cw-backdrop');
+      const setOpen = (open) => {
+        document.body.classList.toggle('cw-menu-open', open);
+        button.setAttribute('aria-expanded', String(open));
+        backdrop.hidden = !open;
+      };
+      button.addEventListener('click', () => setOpen(!document.body.classList.contains('cw-menu-open')));
+      backdrop.addEventListener('click', () => setOpen(false));
+      document.addEventListener('keydown', (event) => { if (event.key === 'Escape') setOpen(false); });
+    })();
+  </script>
+{% else %}
+  <header id="header">
+    <div id="branding">
+      <div id="site-name">
+        <a class="admin-brand" href="{% url 'admin:index' %}">
+          <span class="admin-brand-mark" aria-hidden="true">✳</span>
+          <span class="admin-brand-copy"><strong>GEETHA’S</strong><small>{{ site_header|default:"Wellness admin" }}</small></span>
+        </a>
+      </div>
+      {% include "admin/color_theme_toggle.html" %}
+    </div>
+  </header>
+{% endif %}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

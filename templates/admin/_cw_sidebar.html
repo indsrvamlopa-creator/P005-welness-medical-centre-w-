@@ -1,0 +1,21 @@
+{% load admin_theme %}
+<aside class="cw-sidebar" id="cw-sidebar" aria-label="Admin menu">
+  <a class="cw-brand" href="{{ dashboard_url }}">
+    <span class="cw-brand-mark" aria-hidden="true">✳</span>
+    <span class="cw-brand-copy"><strong>GEETHA’S</strong><small>Wellness Consultancy</small></span>
+  </a>
+  <nav class="cw-nav">
+    <a class="cw-nav-link{% if dashboard_active %} is-active{% endif %}" href="{{ dashboard_url }}"{% if dashboard_active %} aria-current="page"{% endif %}>{% cw_icon "home" %}<span>Dashboard</span></a>
+    {% for group in groups %}
+      <p class="cw-nav-title">{{ group.title }}</p>
+      {% for item in group.items %}
+        {% if item.url %}
+          <a class="cw-nav-link{% if item.active %} is-active{% endif %}" href="{{ item.url }}"{% if item.active %} aria-current="page"{% endif %}>{% cw_icon item.icon %}<span>{{ item.name }}</span>{% if item.badge %}<b class="cw-badge" title="{{ item.badge }} waiting">{{ item.badge }}</b>{% endif %}</a>
+        {% else %}
+          <span class="cw-nav-link is-disabled">{% cw_icon item.icon %}<span>{{ item.name }}</span></span>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </nav>
+  <a class="cw-sidebar-site" href="{{ site_url }}" target="_blank" rel="noopener">{% cw_icon "external" %}<span>Open the website</span></a>
+</aside>
