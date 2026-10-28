@@ -1,7 +1,7 @@
 import logging
 
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 
 logger = logging.getLogger(__name__)
 
@@ -23,13 +23,16 @@ def notify_coach(subject, submission):
 
     email_subject = f'[Website] {subject}'
 
+    visitor_email = getattr(submission, 'email', '')
     try:
-        send_mail(
+        EmailMessage(
             email_subject,
             '\n'.join(lines) + '\n\nView all submissions in the website admin panel.',
             None,
             recipients,
-        )
+            # Replying to the notification answers the visitor directly.
+            reply_to=[visitor_email] if visitor_email else None,
+        ).send()
     except Exception:
         # A mail outage must never lose the visitor's saved submission.
         logger.exception('Could not send coach notification for %s', submission)

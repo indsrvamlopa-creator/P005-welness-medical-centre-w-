@@ -1273,3 +1273,40 @@ class SiteNameTests(TestCase):
             content = self.client.get(url).content.decode()
             self.assertIn('Geetha’s Wellness Consultancy', content, url)
             self.assertNotIn('Community Wellness', content, url)
+
+
+@override_settings(BREVO_API_KEY='test-key', BREVO_SENDER_NAME='Geetha’s Wellness Consultancy')
+class BrevoBackendTests(TestCase):
+    def send(self, **kwargs):
+        import json
+        from unittest import mock
+        from django.core.mail import EmailMessage
+        from baggi.brevo import BrevoEmailBackend
+
+        message = EmailMessage('[Website] New booking', 'Full name: Asha', 'Geetha’s Wellness Consultancy <coach@example.com>',
+                               ['doddinikki185@gmail.com'], **kwargs)
+        with mock.patch('baggi.brevo.urllib.request.urlopen') as urlopen:
+            urlopen.return_value.__enter__.return_value.read.return_value = b'{"messageId": "1"}'
+            sent = BrevoEmailBackend().send_messages([message])
+        request = urlopen.call_args[0][0]
+        return sent, request, json.loads(request.data)
+
+    def test_posts_message_to_brevo_with_api_key(self):
+        sent, request, payload = self.send(reply_to=['visitor@example.com'])
+
+        self.assertEqual(sent, 1)
+        self.assertEqual(request.full_url, 'https://api.brevo.com/v3/smtp/email')
+        self.assertEqual(request.get_header('Api-key'), 'test-key')
+        self.assertEqual(payload['sender'], {'name': 'Geetha’s Wellness Consultancy', 'email': 'coach@example.com'})
+        self.assertEqual(payload['to'], [{'email': 'doddinikki185@gmail.com'}])
+        self.assertEqual(payload['replyTo'], {'email': 'visitor@example.com'})
+        self.assertEqual(payload['textContent'], 'Full name: Asha')
+
+    @override_settings(COACH_NOTIFICATION_EMAILS=['doddinikki185@gmail.com'])
+    def test_notification_replies_go_to_the_visitor(self):
+        self.client.post('/', consultation_data(email='visitor@example.com'))
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ['doddinikki185@gmail.com'])
+        self.assertEqual(mail.outbox[0].reply_to, ['visitor@example.com'])
+        self.assertIn('Priya Kumar', mail.outbox[0].body)

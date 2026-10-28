@@ -155,13 +155,27 @@ WHATSAPP_GREETING = 'Hi! I found your website and would like to know more about 
 MEMBER_DISCLOSURE = 'Independent Herbalife Member'
 
 # Coach email addresses that receive a notification for every new website submission.
-COACH_NOTIFICATION_EMAILS = []
+# Comma-separated in the COACH_NOTIFICATION_EMAILS environment variable.
+COACH_NOTIFICATION_EMAILS = [
+    address.strip()
+    for address in os.environ.get('COACH_NOTIFICATION_EMAILS', 'doddinikki185@gmail.com').split(',')
+    if address.strip()
+]
 
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# With a Brevo API key (in .env locally, or Render's environment) mail is really sent;
+# without one it is only printed to the console.
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '')
+BREVO_SENDER_EMAIL = os.environ.get('BREVO_SENDER_EMAIL', 'doddinikki185@gmail.com')
+BREVO_SENDER_NAME = os.environ.get('BREVO_SENDER_NAME', 'Geetha’s Wellness Consultancy')
+DEFAULT_FROM_EMAIL = f'{BREVO_SENDER_NAME} <{BREVO_SENDER_EMAIL}>'
+EMAIL_BACKEND = (
+    'baggi.brevo.BrevoEmailBackend' if BREVO_API_KEY
+    else 'django.core.mail.backends.console.EmailBackend'
+)
 
 
 # Print errors (with tracebacks) to the console, so they appear in Render's logs
