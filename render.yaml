@@ -2,5 +2,5 @@ services:
   - type: web
     name: welfare
     runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python manage.py migrate --noinput && gunicorn welfare.wsgi:application --bind 0.0.0.0:$PORT
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
+    startCommand: gunicorn welfare.wsgi:application --bind 0.0.0.0:$PORT
