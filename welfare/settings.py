@@ -30,8 +30,11 @@ DEBUG = os.environ.get('DJANGO_DEBUG', '').lower() in ('1', 'true', 'yes')
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'p005-welness-medical-centre-w.onrender.com',
+    'p005-welness-medical-centre-w-4.onrender.com',
 ]
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 
 # Application definition
