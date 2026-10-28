@@ -56,7 +56,7 @@ def about_photos():
     return uploaded or [(static(path), alt) for path, alt in DEFAULT_ABOUT_PHOTOS]
 
 
-@require_http_methods(['GET', 'POST'])
+@require_http_methods(['GET', 'HEAD', 'POST'])
 def home(request):
     events = list(CommunityEvent.objects.upcoming())
     open_events = CommunityEvent.objects.filter(
@@ -197,6 +197,6 @@ def home(request):
     })
 
 
-@require_http_methods(['GET'])
+@require_http_methods(['GET', 'HEAD'])
 def privacy(request):
     return render(request, 'baggi/privacy.html')
