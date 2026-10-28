@@ -3,4 +3,4 @@ services:
     name: welfare
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn welfare.wsgi:application --bind 0.0.0.0:$PORT
+    startCommand: python manage.py migrate --noinput && gunicorn welfare.wsgi:application --bind 0.0.0.0:$PORT
