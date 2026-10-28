@@ -15,9 +15,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
+from django.views.static import serve
 from baggi import views
 
 urlpatterns = [
@@ -26,6 +26,8 @@ urlpatterns = [
     path('privacy/', views.privacy, name='privacy'),
 ]
 
-if settings.DEBUG:
-    # In production, serve uploaded media from the web server instead.
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Uploaded photos (About, events, reviews). Fine for a small site; a busy one
+# would serve these from a CDN or cloud storage instead.
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+]

@@ -1347,3 +1347,31 @@ class NotificationEmailTests(TestCase):
         self.assertIn('Anu left a 5-star review', html)
         self.assertNotIn('href="tel:', html)
         self.assertIn('Lovely coaching.', html)
+
+
+class MissingUploadTests(TestCase):
+    def test_about_falls_back_when_uploaded_file_is_missing(self):
+        AboutPhoto.objects.create(image='about/gone-after-redeploy.png', alt_text='Gone', is_published=True)
+
+        response = self.client.get('/')
+
+        self.assertNotContains(response, 'gone-after-redeploy.png')
+        self.assertContains(response, 'baggi/media/about/exercise-1.jpg')
+
+    def test_uploaded_files_are_served_without_debug(self):
+        from pathlib import Path
+        from django.conf import settings
+
+        folder = Path(settings.MEDIA_ROOT, 'about')
+        folder.mkdir(parents=True, exist_ok=True)
+        photo = folder / 'serve-test-photo.png'
+        photo.write_bytes(b'png-bytes')
+        try:
+            with override_settings(DEBUG=False):
+                response = self.client.get('/media/about/serve-test-photo.png')
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(b''.join(response.streaming_content), b'png-bytes')
+                # Requests that try to leave the uploads folder are refused.
+                self.assertIn(self.client.get('/media/../welfare/settings.py').status_code, (400, 404))
+        finally:
+            photo.unlink()

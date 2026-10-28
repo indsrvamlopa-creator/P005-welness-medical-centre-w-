@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.templatetags.static import static
+from django.core.files.storage import default_storage
 from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -46,7 +47,12 @@ DEFAULT_ABOUT_PHOTOS = [
 
 def about_photos():
     """(url, alt) pairs for the About slideshow."""
-    uploaded = [(photo.image.url, photo.alt_text) for photo in AboutPhoto.objects.filter(is_published=True)]
+    # A file can disappear (e.g. Render's free disk is wiped on redeploy); never show a broken image.
+    uploaded = [
+        (photo.image.url, photo.alt_text)
+        for photo in AboutPhoto.objects.filter(is_published=True)
+        if photo.image and default_storage.exists(photo.image.name)
+    ]
     return uploaded or [(static(path), alt) for path, alt in DEFAULT_ABOUT_PHOTOS]
 
 
