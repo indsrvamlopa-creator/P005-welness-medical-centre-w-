@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>{{ kind.headline }}</title>
+</head>
+<body style="margin:0;padding:0;background:#060f1c;-webkit-text-size-adjust:100%;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">{{ kind.summary }}</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#060f1c" style="background:#060f1c;background-image:radial-gradient(circle at 15% 0%,#1d4268 0%,#060f1c 55%);">
+    <tr>
+      <td align="center" style="padding:32px 14px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+
+          <!-- Brand -->
+          <tr>
+            <td style="padding:0 6px 18px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+                <td width="38" height="38" align="center" style="border:1px solid #d3b76f;border-radius:50%;color:#d3b76f;font-size:18px;line-height:38px;">&#10035;</td>
+                <td style="padding-left:12px;">
+                  <div style="color:#ffffff;font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">{{ site_name }}</div>
+                  <div style="color:#8ea3bd;font-size:11px;letter-spacing:2px;text-transform:uppercase;">Website notification</div>
+                </td>
+              </tr></table>
+            </td>
+          </tr>
+
+          <!-- Card -->
+          <tr>
+            <td bgcolor="#0e2541" style="background:#0e2541;background-image:linear-gradient(160deg,#173a61 0%,#0e2541 45%,#0b1b30 100%);border:1px solid #3b5878;border-top:3px solid #d3b76f;border-radius:18px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+
+                <!-- Type + headline -->
+                <tr>
+                  <td style="padding:28px 28px 6px;">
+                    <span style="display:inline-block;padding:5px 12px;border:1px solid {{ kind.colour }};border-radius:999px;color:{{ kind.colour }};font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">&#9679;&nbsp; {{ kind.label }}</span>
+                    <h1 style="margin:16px 0 10px;color:#ffffff;font-size:26px;line-height:1.25;font-weight:700;">{{ kind.headline }}</h1>
+                    <p style="margin:0;color:#c3d0e0;font-size:15px;line-height:1.6;">{{ kind.summary }}</p>
+                  </td>
+                </tr>
+
+                <!-- Contact panel -->
+                <tr>
+                  <td style="padding:22px 28px 4px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#081729;border:1px solid #2a4566;border-radius:14px;">
+                      <tr>
+                        <td style="padding:18px 20px;">
+                          <div style="color:#8ea3bd;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Contact</div>
+                          <div style="margin:6px 0 2px;color:#f7e7b4;font-size:20px;font-weight:700;">{{ name }}</div>
+                          {% if mobile %}<div style="color:#ffffff;font-size:15px;">&#9742;&nbsp; {{ mobile }}</div>{% endif %}
+                          {% if email %}<div style="color:#ffffff;font-size:15px;">&#9993;&nbsp; <a href="mailto:{{ email }}" style="color:#ffffff;text-decoration:none;">{{ email }}</a></div>{% endif %}
+                          {% if mobile_digits or email %}
+                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;"><tr>
+                            {% if mobile_digits %}
+                            <td style="padding:0 8px 8px 0;"><a href="tel:+{{ mobile_digits }}" style="display:inline-block;padding:10px 16px;border-radius:10px;background:#d3b76f;color:#0b1b30;font-size:13px;font-weight:700;text-decoration:none;">Call</a></td>
+                            <td style="padding:0 8px 8px 0;"><a href="https://wa.me/{{ mobile_digits }}" style="display:inline-block;padding:10px 16px;border-radius:10px;background:#25d366;color:#0b1b30;font-size:13px;font-weight:700;text-decoration:none;">WhatsApp</a></td>
+                            {% endif %}
+                            {% if email %}
+                            <td style="padding:0 8px 8px 0;"><a href="mailto:{{ email }}" style="display:inline-block;padding:9px 15px;border:1px solid #7fb2e6;border-radius:10px;color:#cfe3f7;font-size:13px;font-weight:700;text-decoration:none;">Email</a></td>
+                            {% endif %}
+                          </tr></table>
+                          {% endif %}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Details -->
+                {% if details %}
+                <tr>
+                  <td style="padding:22px 28px 4px;">
+                    <div style="margin-bottom:8px;color:#d3b76f;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">What they told you</div>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      {% for label, value in details %}
+                      <tr>
+                        <td valign="top" width="38%" style="padding:11px 12px 11px 0;border-bottom:1px solid #22405f;color:#8ea3bd;font-size:13px;">{{ label }}</td>
+                        <td valign="top" style="padding:11px 0;border-bottom:1px solid #22405f;color:#ffffff;font-size:14px;line-height:1.5;">{{ value|linebreaksbr }}</td>
+                      </tr>
+                      {% endfor %}
+                    </table>
+                  </td>
+                </tr>
+                {% endif %}
+
+                <!-- Next step -->
+                <tr>
+                  <td style="padding:22px 28px 8px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left:3px solid #d3b76f;background:#132f50;border-radius:0 10px 10px 0;">
+                      <tr><td style="padding:14px 16px;">
+                        <div style="color:#d3b76f;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">What to do next</div>
+                        <div style="margin-top:5px;color:#e6edf5;font-size:14px;line-height:1.55;">{{ kind.next_step }}</div>
+                      </td></tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Button -->
+                <tr>
+                  <td style="padding:18px 28px 30px;">
+                    <a href="{{ admin_link }}" style="display:inline-block;padding:14px 22px;border-radius:12px;background:#d3b76f;background-image:linear-gradient(135deg,#f7e7b4,#d3b76f 45%,#b8995a);color:#0b1b30;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">Open in admin &rarr;</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:18px 6px 0;color:#6f86a3;font-size:12px;line-height:1.6;">
+              Sent automatically by your website when someone submits a form. {% if email %}Press <b style="color:#8ea3bd;">Reply</b> to answer {{ name }} directly.{% endif %}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

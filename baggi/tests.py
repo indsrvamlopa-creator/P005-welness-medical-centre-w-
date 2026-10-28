@@ -1310,3 +1310,40 @@ class BrevoBackendTests(TestCase):
         self.assertEqual(mail.outbox[0].to, ['doddinikki185@gmail.com'])
         self.assertEqual(mail.outbox[0].reply_to, ['visitor@example.com'])
         self.assertIn('Priya Kumar', mail.outbox[0].body)
+
+
+@override_settings(COACH_NOTIFICATION_EMAILS=['doddinikki185@gmail.com'], SITE_URL='https://example.org')
+class NotificationEmailTests(TestCase):
+    def html(self):
+        message = mail.outbox[-1]
+        return message, message.alternatives[0][0]
+
+    def test_service_booking_email_explains_and_links_to_admin(self):
+        service = Service.objects.filter(is_published=True).first()
+        self.client.post('/', {
+            'form_type': 'book', 'book-service': service.pk, 'book-full_name': 'Asha R',
+            'book-mobile_number': '+91 90000 00002', 'book-email': 'asha@example.com', 'book-goal': 'weight-loss',
+            'book-consultation_mode': 'online', 'book-preferred_contact_method': 'phone', 'book-consent': 'on',
+        })
+        message, html = self.html()
+        booking = WellnessConsultation.objects.get()
+
+        self.assertIn('Asha R', message.subject)
+        self.assertIn('Service booking', html)
+        self.assertIn(f'Asha R booked “{service.title}”', html.replace('&quot;', '"').replace('&ldquo;', '“'))
+        self.assertIn('href="tel:+919000000002"', html)
+        self.assertIn('href="https://wa.me/919000000002"', html)
+        self.assertIn(f'https://example.org/admin/baggi/servicebooking/{booking.pk}/change/', html)
+        self.assertIn('What to do next', html)
+        self.assertIn('Weight loss', message.body)
+
+    def test_review_email_has_no_phone_buttons(self):
+        self.client.post('/', {
+            'form_type': 'review', 'full_name': 'Anu', 'rating': '5', 'review': 'Lovely coaching.',
+            'consent_to_publish': 'on', 'website': '',
+        })
+        message, html = self.html()
+
+        self.assertIn('Anu left a 5-star review', html)
+        self.assertNotIn('href="tel:', html)
+        self.assertIn('Lovely coaching.', html)

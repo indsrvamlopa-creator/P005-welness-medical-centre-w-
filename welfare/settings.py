@@ -168,6 +168,8 @@ COACH_NOTIFICATION_EMAILS = [
 
 # With a Brevo API key (in .env locally, or Render's environment) mail is really sent;
 # without one it is only printed to the console.
+# Used for links in notification emails (e.g. "Open in admin").
+SITE_URL = os.environ.get('SITE_URL', 'https://p005-welness-medical-centre-w-4.onrender.com')
 BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '')
 BREVO_SENDER_EMAIL = os.environ.get('BREVO_SENDER_EMAIL', 'doddinikki185@gmail.com')
 BREVO_SENDER_NAME = os.environ.get('BREVO_SENDER_NAME', 'Geetha’s Wellness Consultancy')

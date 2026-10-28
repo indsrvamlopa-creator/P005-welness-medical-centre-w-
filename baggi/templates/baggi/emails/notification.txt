@@ -1,0 +1,20 @@
+{% autoescape off %}{{ kind.label|upper }}
+{{ kind.headline }}
+
+{{ kind.summary }}
+
+CONTACT
+Name: {{ name }}{% if mobile %}
+Mobile: {{ mobile }}{% endif %}{% if email %}
+Email: {{ email }}{% endif %}
+{% if details %}
+WHAT THEY TOLD YOU
+{% for label, value in details %}{{ label }}: {{ value }}
+{% endfor %}{% endif %}
+WHAT TO DO NEXT
+{{ kind.next_step }}
+
+Open in admin: {{ admin_link }}
+{% if email %}
+Reply to this email to answer {{ name }} directly.{% endif %}
+{% endautoescape %}
