@@ -14,8 +14,6 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 import os
 from pathlib import Path
 
-from django.core.exceptions import ImproperlyConfigured
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,9 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '')
-if not SECRET_KEY:
-    raise ImproperlyConfigured('Set DJANGO_SECRET_KEY before starting the application.')
+SECRET_KEY = '4vdhdixqqplya4r32)3_s)marv4tdfb=+s@u1mf^-))8itiq^_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '').lower() in ('1', 'true', 'yes')
@@ -144,12 +140,7 @@ WHATSAPP_GREETING = 'Hi! I found your website and would like to know more about 
 MEMBER_DISCLOSURE = 'Independent Herbalife Member'
 
 # Coach email addresses that receive a notification for every new website submission.
-COACH_NOTIFICATION_EMAILS = ['doddinikki185@gmail.com']
-
-# Keep transactional email credentials out of source control and browser code.
-BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '')
-BREVO_SENDER_EMAIL = os.environ.get('BREVO_SENDER_EMAIL', 'doddinikki185@gmail.com')
-BREVO_SENDER_NAME = os.environ.get('BREVO_SENDER_NAME', "Geetha's Wellness Consultancy")
+COACH_NOTIFICATION_EMAILS = []
 
 
 # Email

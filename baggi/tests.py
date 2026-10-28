@@ -1,10 +1,8 @@
 import io
-import json
 import shutil
 import tempfile
 from datetime import timedelta
 from decimal import Decimal
-from unittest.mock import patch
 
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -302,7 +300,7 @@ class WellnessCoachingTests(TestCase):
         self.assertContains(response, 'This field is required.')
         self.assertEqual(WellnessConsultation.objects.count(), 0)
 
-    @override_settings(COACH_NOTIFICATION_EMAILS=['coach@example.com'], BREVO_API_KEY='')
+    @override_settings(COACH_NOTIFICATION_EMAILS=['coach@example.com'])
     def test_coach_is_emailed_about_new_submissions(self):
         self.client.post('/', consultation_data())
         self.client.post('/', {
@@ -319,36 +317,13 @@ class WellnessCoachingTests(TestCase):
         self.assertIn('consultation', mail.outbox[0].subject)
         self.assertIn('Priya Kumar', mail.outbox[0].body)
         self.assertIn('Weight loss', mail.outbox[0].body)
-        self.assertEqual(len(mail.outbox[0].alternatives), 1)
-        self.assertIn('<table', mail.outbox[0].alternatives[0][0])
-        self.assertIn('New website submission', mail.outbox[0].alternatives[0][0])
 
-    @override_settings(COACH_NOTIFICATION_EMAILS=[], BREVO_API_KEY='')
+    @override_settings(COACH_NOTIFICATION_EMAILS=[])
     def test_no_email_is_sent_without_configured_recipients(self):
         self.client.post('/', consultation_data())
 
         self.assertEqual(len(mail.outbox), 0)
         self.assertEqual(WellnessConsultation.objects.count(), 1)
-
-    @override_settings(
-        BREVO_API_KEY='test-api-key',
-        BREVO_SENDER_EMAIL='verified@example.com',
-        COACH_NOTIFICATION_EMAILS=['doddinikki185@gmail.com'],
-    )
-    @patch('baggi.notifications.urlopen')
-    def test_brevo_receives_submission_at_configured_destination(self, mock_urlopen):
-        self.client.post('/', consultation_data())
-
-        request = mock_urlopen.call_args.args[0]
-        payload = json.loads(request.data)
-        self.assertEqual(request.full_url, 'https://api.brevo.com/v3/smtp/email')
-        self.assertEqual(request.get_header('Api-key'), 'test-api-key')
-        self.assertEqual(payload['to'], [{'email': 'doddinikki185@gmail.com'}])
-        self.assertIn('Priya Kumar', payload['textContent'])
-        self.assertIn('Weight loss', payload['textContent'])
-        self.assertIn('Consent: Yes', payload['textContent'])
-        self.assertIn('<table', payload['htmlContent'])
-        self.assertIn('New website submission', payload['htmlContent'])
 
     def test_only_consented_published_success_story_is_shown(self):
         SuccessStory.objects.create(client_name='R.', quote='Hidden draft story', client_consent=True)
@@ -761,7 +736,7 @@ class ReviewTests(TestCase):
 
         self.assertEqual(Review.objects.count(), 0)
 
-    @override_settings(COACH_NOTIFICATION_EMAILS=['coach@example.com'], BREVO_API_KEY='')
+    @override_settings(COACH_NOTIFICATION_EMAILS=['coach@example.com'])
     def test_coach_is_emailed_about_new_review(self):
         self.client.post('/', review_data())
 
